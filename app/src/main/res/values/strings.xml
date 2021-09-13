@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">IQUII Task</string>
+    <string name="title_gallery">Gallery</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="no_image_found">No Image Found</string>
+    <string name="image_name">Image Name</string>
+</resources>
