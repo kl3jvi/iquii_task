@@ -7,8 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.kl3jvi.iquiitask.R
 import com.kl3jvi.iquiitask.databinding.GridItemBinding
 import com.kl3jvi.iquiitask.model.entities.Children
+import com.kl3jvi.iquiitask.model.entities.FavoriteImage
+import com.kl3jvi.iquiitask.view.fragments.GalleryFragment
+import com.maxkeppeler.sheets.options.Option
+import com.maxkeppeler.sheets.options.OptionsSheet
 import com.stfalcon.imageviewer.StfalconImageViewer
 
 
@@ -42,23 +47,51 @@ class CustomGridItemAdapter(
             .into(holder.image)
 
         holder.image.setOnClickListener {
-            val imageViewer =
-                StfalconImageViewer.Builder(
-                    fragment.context,
-                    imageUrls
-                ) { view, image ->
-                    Glide.with(view.context)
-                        .applyDefaultRequestOptions(
-                            RequestOptions()
-                                .placeholder(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
-                                .error(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
-                        )
-                        .load(image.data.url)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .into(view)
+            val sheet = fragment?.context?.let { it ->
+                OptionsSheet().build(it) {
+                    with(
+                        Option(R.drawable.ic_gallery, "View Image"),
+                        Option(R.drawable.ic_favorite, "Save Image")
+                    )
+                    onPositive { index: Int, _: Option ->
+                        when (index) {
+                            0 -> {
+                                val imageViewer =
+                                    StfalconImageViewer.Builder(
+                                        fragment.context,
+                                        imageUrls
+                                    ) { view, image ->
+                                        Glide.with(view.context)
+                                            .applyDefaultRequestOptions(
+                                                RequestOptions()
+                                                    .placeholder(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+                                                    .error(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+                                            )
+                                            .load(image.data.url)
+                                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                            .into(view)
+                                    }
+                                imageViewer.withStartPosition(position)
+                                imageViewer.show()
+                            }
+                            1 -> {
+                                if (fragment is GalleryFragment) {
+                                    fragment.saveThisImage(
+                                        FavoriteImage(
+                                            title = url.data.title,
+                                            imageUrl = url.data.url,
+                                            favorite = true
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-            imageViewer.withStartPosition(position)
-            imageViewer.show()
+            }
+            sheet?.show()
+
+
         }
 
 

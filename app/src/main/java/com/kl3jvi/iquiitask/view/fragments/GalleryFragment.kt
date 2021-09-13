@@ -3,19 +3,25 @@ package com.kl3jvi.iquiitask.view.fragments
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.kl3jvi.iquiitask.R
+import com.kl3jvi.iquiitask.application.IQUIIApplication
 import com.kl3jvi.iquiitask.databinding.FragmentGalleryBinding
+import com.kl3jvi.iquiitask.model.entities.FavoriteImage
 import com.kl3jvi.iquiitask.view.adapters.CustomGridItemAdapter
+import com.kl3jvi.iquiitask.viewmodel.FavImageViewModelFactory
 import com.kl3jvi.iquiitask.viewmodel.GalleryViewModel
+
 
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
-    private lateinit var mGalleryViewModel: GalleryViewModel
+    private val mGalleryViewModel: GalleryViewModel by viewModels {
+        FavImageViewModelFactory((requireActivity().application as IQUIIApplication).repository)
+    }
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -37,21 +43,14 @@ class GalleryFragment : Fragment() {
         val imageAdapter = CustomGridItemAdapter(this)
         _binding!!.rvImageGrid.adapter = imageAdapter
 
-        mGalleryViewModel = ViewModelProvider(this).get(GalleryViewModel::class.java)
-
-
-
-
         mGalleryViewModel.subredditResponse.observe(viewLifecycleOwner, { response ->
             response?.let { res ->
-                if (res.data.children.isNotEmpty()) {
-
+                val listOfChildren = res.data.children
+                if (listOfChildren.isNotEmpty()) {
                     imageAdapter.imageList(res.data.children)
                 }
-
             }
         })
-
 
     }
 
@@ -89,4 +88,9 @@ class GalleryFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    fun saveThisImage(image: FavoriteImage) {
+        mGalleryViewModel.insert(image)
+    }
+
 }
