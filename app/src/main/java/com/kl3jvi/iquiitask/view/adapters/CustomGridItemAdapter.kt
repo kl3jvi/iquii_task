@@ -9,6 +9,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.kl3jvi.iquiitask.databinding.GridItemBinding
 import com.kl3jvi.iquiitask.model.entities.Children
+import com.stfalcon.imageviewer.StfalconImageViewer
 
 
 class CustomGridItemAdapter(
@@ -39,6 +40,26 @@ class CustomGridItemAdapter(
             .load(url.data.url)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(holder.image)
+
+        holder.image.setOnClickListener {
+            val imageViewer =
+                StfalconImageViewer.Builder(
+                    fragment.context,
+                    imageUrls
+                ) { view, image ->
+                    Glide.with(view.context)
+                        .applyDefaultRequestOptions(
+                            RequestOptions()
+                                .placeholder(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+                                .error(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+                        )
+                        .load(image.data.url)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .into(view)
+                }
+            imageViewer.show()
+        }
+
 
         holder.title.text = url.data.title
     }
