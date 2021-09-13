@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -65,6 +67,10 @@ dependencies {
 
     //Full Screen Image Displayer
     implementation 'com.github.stfalcon:stfalcon-imageviewer:1.0.1'
+
+    def room_version = '2.3.0'
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

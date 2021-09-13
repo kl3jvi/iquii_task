@@ -57,6 +57,7 @@ class CustomGridItemAdapter(
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(view)
                 }
+            imageViewer.withStartPosition(position)
             imageViewer.show()
         }
 
