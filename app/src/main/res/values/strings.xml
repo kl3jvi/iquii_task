@@ -4,4 +4,7 @@
     <string name="title_favorites">Favorites</string>
     <string name="no_image_found">No Image Found</string>
     <string name="image_name">Image Name</string>
+    <string name="search">Search</string>
+    <string name="two_span_count">2 Way Grid</string>
+    <string name="three_way_grid">3 Way Grid</string>
 </resources>

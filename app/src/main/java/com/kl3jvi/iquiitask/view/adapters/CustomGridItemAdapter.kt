@@ -5,8 +5,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.kl3jvi.iquiitask.databinding.GridItemBinding
 import com.kl3jvi.iquiitask.model.entities.Children
+
 
 class CustomGridItemAdapter(
     private val fragment: Fragment
@@ -26,11 +29,20 @@ class CustomGridItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val url = imageUrls[position]
+
         Glide.with(fragment)
+            .applyDefaultRequestOptions(
+                RequestOptions()
+                    .placeholder(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+                    .error(com.kl3jvi.iquiitask.R.drawable.ic_baseline_image_not_supported_24)
+            )
             .load(url.data.url)
+            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
             .into(holder.image)
+
         holder.title.text = url.data.title
     }
+
 
     override fun getItemCount() = imageUrls.size
 

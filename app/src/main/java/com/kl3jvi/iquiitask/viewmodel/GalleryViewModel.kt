@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kl3jvi.iquiitask.model.entities.RedditApiResponse
 import com.kl3jvi.iquiitask.model.network.RedditApiService
+import com.kl3jvi.iquiitask.utils.Resource
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
 class GalleryViewModel : ViewModel() {
     private val redditApiService = RedditApiService()
@@ -13,7 +16,15 @@ class GalleryViewModel : ViewModel() {
 
     fun getApiResponse(searchQuery: String) {
         viewModelScope.launch {
-            subredditResponse.value = redditApiService.getResponse(searchQuery)
+            try {
+                Resource.Success(redditApiService.getResponse(searchQuery))
+                subredditResponse.value = redditApiService.getResponse(searchQuery)
+            } catch (e: IOException) {
+                Resource.Error(e.localizedMessage, "")
+            } catch (e: HttpException) {
+                Resource.Error(e.localizedMessage, "")
+            }
+
         }
     }
 }
